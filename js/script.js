@@ -6,6 +6,7 @@ let calculateLine = {
     secondNumb: '',
     sign: '',
     result: '',
+    equality: false,
     empty: true,
     clear() {
         this.firstSign = true;
@@ -15,59 +16,101 @@ let calculateLine = {
         this.sign = '';
         this.result = '';
         this.empty = true;
+        this.equality = false;
     }
 };
+// Вычисление результата
+let getResult = (str1, str2, sign) => {
+    switch (sign) {
+        case '+': { return (parseFloat(str1) + parseFloat(str2)).toString() }
+    }
+}
+
 // Функция к-я на основе имени класса меняет объект Строки расчета
 let pasteCalculLine = (clickButton) => {
+    if (((calculateLine.firstNumb.length === 12) || (calculateLine.secondNumb.length === 12)) & (clickButton != 'clear')) return;
+    let status = document.getElementById('status');
+    if ((calculateLine.empty === true) & (calculateLine.sign === '')) status.textContent = '';
     calculateLine.empty = false;
     switch (clickButton) {
-        case 'clear': { calculateLine.clear(); break }
+        case 'clear': { calculateLine.clear(); status.textContent = ''; break }
         case 'one': {
+            status.textContent += '1';
             if (calculateLine.sign === '') calculateLine.firstNumb += '1';
-            else calculateLine.secondtNumb += '1'; break
+            else calculateLine.secondNumb += '1'; break
         }
         case 'two': {
+            status.textContent += '2';
             if (calculateLine.sign === '') calculateLine.firstNumb += '2';
-            else calculateLine.secondtNumb += '2'; break
+            else calculateLine.secondNumb += '2'; break
         }
         case 'three': {
+            status.textContent += '3';
             if (calculateLine.sign === '') calculateLine.firstNumb += '3';
-            else calculateLine.secondtNumb += '3'; break
+            else calculateLine.secondNumb += '3'; break
         }
         case 'four': {
+            status.textContent += '4';
             if (calculateLine.sign === '') calculateLine.firstNumb += '4';
-            else calculateLine.secondtNumb += '4'; break
+            else calculateLine.secondNumb += '4'; break
         }
         case 'five': {
+            status.textContent += '5';
             if (calculateLine.sign === '') calculateLine.firstNumb += '5';
-            else calculateLine.secondtNumb += '5'; break
+            else calculateLine.secondNumb += '5'; break
         }
         case 'six': {
+            status.textContent += '6';
             if (calculateLine.sign === '') calculateLine.firstNumb += '6';
-            else calculateLine.secondtNumb += '6'; break
+            else calculateLine.secondNumb += '6'; break
         }
         case 'seven': {
+            status.textContent += '7';
             if (calculateLine.sign === '') calculateLine.firstNumb += '7';
-            else calculateLine.secondtNumb += '7'; break
+            else calculateLine.secondNumb += '7'; break
         }
         case 'eight': {
+            calculateLine.firstNumb += '8';
             if (calculateLine.sign === '') calculateLine.firstNumb += '8';
-            else calculateLine.secondtNumb += '8'; break
+            else calculateLine.secondNumb += '8'; break
         }
         case 'nine': {
+            status.textContent += '9';
             if (calculateLine.sign === '') calculateLine.firstNumb += '9';
-            else calculateLine.secondtNumb += '9'; break
+            else calculateLine.secondNumb += '9'; break
         }
         case 'zero': {
+            status.textContent += '0';
             if ((calculateLine.sign === '') & (calculateLine.firstNumb != '')) { calculateLine.firstNumb += '0'; }
-            else if (calculateLine.secondNumb != '')  calculateLine.secondNumb += '0'; 
+            else if (calculateLine.secondNumb != '') calculateLine.secondNumb += '0';
             break;
         }
         case 'double-zero': {
+            status.textContent += '00';
             if ((calculateLine.sign === '') & (calculateLine.firstNumb != '')) { calculateLine.firstNumb += '00'; }
-            else if (calculateLine.secondNumb != '')  calculateLine.secondNumb += '00'; 
+            else if (calculateLine.secondNumb != '') calculateLine.secondNumb += '00';
             break;
         }
+        case 'plus':
+            {
+                if (calculateLine.sign === '') {
+                    status.textContent += '+';
+                    calculateLine.sign = '+';
+                    calculateLine.empty = true;
+                }
+                break;
+            }
+        case 'equally':
+            {
+                if ((calculateLine.sign != '') & (calculateLine.firstNumb != '') & (calculateLine.secondNumb != '') & (calculateLine.equality === false)) {
+                    calculateLine.equality = true;
+                    calculateLine.empty = true;
+                    calculateLine.result = getResult(calculateLine.firstNumb, calculateLine.secondNumb, calculateLine.sign)
+                    status.textContent += '=';
+                    status.textContent += calculateLine.result;
+                }
+                break;
+            }
 
         default: break;
     }
@@ -91,11 +134,12 @@ let renderCalculLine = (lineOfNumber) => {
                 num.classList.add('backTrue');
             }
         }
-        return;
+        if (lineOfNumber.equality===false )return;
     }
     let dataStr = '';
     if (lineOfNumber.sign === '') dataStr = lineOfNumber.firstNumb;
-    else dataStr = lineOfNumber.secondNumb;
+    else if ((lineOfNumber.sign != '')&(lineOfNumber.equality===false)) dataStr = lineOfNumber.secondNumb;
+    else if (lineOfNumber.equality===true) dataStr = lineOfNumber.result;
     for (let i = 0; i < dataStr.length; i++) {
         if (numerals[i].classList.contains('backTrue')) {
             numerals[i].lastElementChild.firstElementChild.textContent = dataStr[dataStr.length - i - 1];
@@ -111,8 +155,7 @@ let renderCalculLine = (lineOfNumber) => {
         }
     }
 }
-let count = true;
-let k = 1;
+// Основная программа
 for (let i of buttons) {
     i.onclick = function (event) {
         pasteCalculLine(i.classList[0]);
