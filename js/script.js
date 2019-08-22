@@ -7,7 +7,7 @@ let calculateLine = {
     sign: '',
     result: '',
     empty: true,
-    clear(){
+    clear() {
         this.firstSign = true;
         this.secondSign = true;
         this.firstNumb = '';
@@ -59,12 +59,14 @@ let pasteCalculLine = (clickButton) => {
             else calculateLine.secondtNumb += '9'; break
         }
         case 'zero': {
-            if (calculateLine.sign === '') calculateLine.firstNumb += '0';
-            else calculateLine.secondtNumb += '0'; break
+            if ((calculateLine.sign === '') & (calculateLine.firstNumb != '')) { calculateLine.firstNumb += '0'; }
+            else if (calculateLine.secondNumb != '')  calculateLine.secondNumb += '0'; 
+            break;
         }
         case 'double-zero': {
-            if (calculateLine.sign === '') calculateLine.firstNumb += '00';
-            else calculateLine.secondtNumb += '00'; break
+            if ((calculateLine.sign === '') & (calculateLine.firstNumb != '')) { calculateLine.firstNumb += '00'; }
+            else if (calculateLine.secondNumb != '')  calculateLine.secondNumb += '00'; 
+            break;
         }
 
         default: break;
@@ -115,10 +117,6 @@ for (let i of buttons) {
     i.onclick = function (event) {
         pasteCalculLine(i.classList[0]);
         renderCalculLine(calculateLine);
-
-        // setTimeout(() => {
-        //     numerals[0].lastElementChild.classList.remove('backface-full');
-        // }, 300);
         event.preventDefault();
         if ((this.classList.contains('plus')) || (this.classList.contains('clear'))) this.classList.add('rotateY');
         this.classList.add('rotateX');
